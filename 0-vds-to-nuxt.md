@@ -319,3 +319,24 @@ sudo systemctl restart nginx
 - `curl https://my-app-tobe.ru` — сайт
 
 # Запуск Nuxt
+
+Переносит проект на сервер и выполняет его сборку
+```
+cd /var/www/my-app-tobe.ru/
+```
+```
+sudo git clone Ссылка на репозиторий ./
+```
+```
+sudo npm install
+```
+```
+sudo npm run build
+```
+```
+sudo npm run start
+```
+Запускает nuxt при помощи pm2
+```
+pm2 start
+```
