@@ -1,12 +1,16 @@
 # Настройка сервера
 
-Подключает
+Подключение по ssh
 
 ```
 ssh root@ip
 ```
 
-Установка NodeJS
+
+# Создания пользователя
+
+
+# Настройка NodeJS
 
 ```
 curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
@@ -18,13 +22,13 @@ sudo apt-get install -y nodejs
 node -v && npm -v
 ```
 
-Установка pm2
+# Установка pm2
 
 ```
 sudo npm install pm2 -g
 ```
 
-Установка Nginx
+# Установка Nginx
 
 ```
 sudo apt update
@@ -33,7 +37,7 @@ sudo apt update
 sudo apt install nginx
 ```
 
-Настройка Nginx
+# Настройка Nginx
 
 ```
 sudo ufw app list
@@ -66,7 +70,7 @@ sudo systemctl restart nginx
 sudo systemctl reload nginx
 ```
 
-Создание сайта
+# Создание сайта
 
 ```
 sudo mkdir -p /var/www/my-app-tobe.ru
@@ -132,3 +136,4 @@ sudo nginx -t
 ```
 sudo systemctl restart nginx
 ```
+# Запуск Nuxt
