@@ -165,6 +165,58 @@ sudo npm install pm2 -g
 ```
 # Сертификат SSL
 
+Генерирует ключ
+
+```
+openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+```
+
+Создаёт папку для снипетов
+
+```
+mkdir -p /etc/nginx/snippets/
+```
+
+Создаёт снипет для SSL
+
+```
+nano /etc/nginx/snippets/ssl-params.conf
+```
+
+```
+ssl_session_timeout 1d;
+ssl_session_cache shared:SSL:10m;
+ssl_session_tickets off;
+ssl_dhparam /etc/ssl/certs/dhparam.pem;
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+ssl_prefer_server_ciphers off;
+add_header Strict-Transport-Security "max-age=63072000" always;
+```
+
+Обновляет snapd
+
+```
+snap install core
+```
+
+Устанавливает certbot
+
+```
+snap install --classic certbot
+```
+
+Проверка certbot
+
+```
+ln -s /snap/bin/certbot /usr/bin/certbot
+```
+
+Выпускает сертификат
+
+```
+certbot certonly --nginx
+```
 
 # Создание сайта
 
@@ -190,6 +242,7 @@ map $sent_http_content_type $expires {
 server {
     listen          80;             # the port nginx is listening on
     server_name     my-app-tobe.ru www.my-app-tobe.ru;    # setup your domain here
+    return 301 https://my-app-tobe.ru$request_uri;
 
     gzip            on;
     gzip_types      text/plain application/xml text/css application/javascript;
@@ -208,6 +261,33 @@ server {
         proxy_pass                          http://127.0.0.1:3000; # set the address of the Node.js instance here
     }
 }
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name www.my-app-tobe.ru;
+    return 301 https://my-app-tobe.ru$request_uri;
+
+    location / {
+      expires $expires;
+
+      proxy_redirect                      off;
+      proxy_set_header Host               $host;
+      proxy_set_header X-Real-IP          $remote_addr;
+      proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto  $scheme;
+      proxy_read_timeout          1m;
+      proxy_connect_timeout       1m;
+      proxy_pass                          http://127.0.0.1:3000; # set the address of the Node.js instance here
+    }
+
+    ssl_certificate /etc/letsencrypt/live/my-app-tobe.ru/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/my-app-tobe.ru/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/my-app-tobe.ru/chain.pem;
+
+    include snippets/ssl-params.conf;
+}
+
 ```
 
 ```
@@ -232,5 +312,10 @@ sudo nginx -t
 ```
 sudo systemctl restart nginx
 ```
+
+Проверяет домен
+
+- `curl http://my-app-tobe.ru` — редирект
+- `curl https://my-app-tobe.ru` — сайт
 
 # Запуск Nuxt
