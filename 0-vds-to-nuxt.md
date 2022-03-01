@@ -163,6 +163,23 @@ sudo systemctl reload nginx
 ```
 sudo npm install pm2 -g
 ```
+Создать файл `ecosystem.config.js` в корне вашего проекта
+
+```
+module.exports = {
+  apps: [
+    {
+      name: 'NuxtLK',
+      exec_mode: 'cluster',
+      instances: 'max', // Or a number of instances
+      script: './node_modules/nuxt/bin/nuxt.js',
+      args: 'start',
+    },
+  ],
+}
+```
+
+
 # Сертификат SSL
 
 Генерирует ключ
