@@ -8,7 +8,102 @@ ssh root@ip
 
 
 # Создания пользователя
+# Пользователь
 
+Добавляет пользователя
+
+```
+adduser user
+```
+
+Даёт права sudo
+
+```
+adduser user sudo
+```
+
+<!-- Открывает настройку ssh
+
+```
+nano /etc/ssh/sshd_config
+```
+
+Запрещает вход по Root (Включить после )
+```
+PermitRootLogin no
+```
+
+Рестартует ssh
+
+```
+systemctl restart sshd
+``` -->
+
+Выходит
+
+```
+exit
+```
+
+Подключается от user
+
+```
+ssh user@ip
+```
+
+Создаёт папку для ключей
+
+```
+mkdir ~/.ssh
+```
+
+Локально: копирует публичный ключ
+
+```
+cat ~/.ssh/id_rsa.pub
+```
+
+Сервер: вставляет ключ
+
+```
+nano ~/.ssh/authorized_keys
+```
+
+Выставляет папке права
+
+```
+chmod -R 700 ~/.ssh/
+```
+
+Открывает настройку ssh
+
+```
+sudo nano /etc/ssh/sshd_config
+```
+
+Отключает вход по паролю
+
+```
+PasswordAuthentication no
+```
+
+Рестартует ssh
+
+```
+sudo systemctl restart sshd
+```
+
+Открывает настройку sudo
+
+```
+sudo visudo
+```
+
+Настраивает sudo без пароля
+
+```
+%sudo   ALL=(ALL:ALL) NOPASSWD:ALL
+```
 
 # Настройка NodeJS
 
@@ -20,12 +115,6 @@ sudo apt-get install -y nodejs
 ```
 ```
 node -v && npm -v
-```
-
-# Установка pm2
-
-```
-sudo npm install pm2 -g
 ```
 
 # Установка Nginx
@@ -69,6 +158,14 @@ sudo systemctl restart nginx
 ```
 sudo systemctl reload nginx
 ```
+
+# Установка pm2
+
+```
+sudo npm install pm2 -g
+```
+# Сертификат SSL
+
 
 # Создание сайта
 
@@ -136,4 +233,5 @@ sudo nginx -t
 ```
 sudo systemctl restart nginx
 ```
+
 # Запуск Nuxt
